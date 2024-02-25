@@ -2,6 +2,7 @@ const cards = document.querySelectorAll(".card");
 let matched = 0;
 let cardOne, cardTwo;
 let disableDeck = false;
+let soundEnabled = true;
 
 function flipCard({ target: clickedCard }) {
     if ((cardOne !== clickedCard && !disableDeck) || (!cardOne && !disableDeck)) {
@@ -86,6 +87,7 @@ function flipCard({ target: clickedCard }) {
 
     if (flipsCount === 1) {
         startTimer();
+        playBackgroundMusic();
     }
 }
 
@@ -98,6 +100,7 @@ function startTimer() {
         if (timeLeft < 0) {
             clearInterval(timer);
             alert("Game Over! Time's up!");
+            stopBackgroundMusic();
             restartGame();
         }
     }, 1000);
@@ -108,6 +111,7 @@ function restartGame() {
     flipsCount = 0;
     document.getElementById('flip-count').innerText = flipsCount;
     document.getElementById('time').innerText = 20;
+    stopBackgroundMusic();
     shuffleCard();
 }
 
@@ -118,3 +122,33 @@ function checkWinner() {
 }
 
 
+function toggleSound() {
+    soundEnabled = !soundEnabled;
+    const soundButton = document.getElementById('sound-btn');
+    soundButton.innerText = soundEnabled ? 'Mute Sound' : 'Unmute Sound';
+
+    if (soundEnabled) {
+      playBackgroundMusic();
+    } else {
+      stopBackgroundMusic();
+    }
+  }
+
+  function playBackgroundMusic() {
+    const backgroundMusic = document.getElementById('background-music');
+    if (soundEnabled) {
+      backgroundMusic.play();
+    }
+  }
+
+  function stopBackgroundMusic() {
+    const backgroundMusic = document.getElementById('background-music');
+    backgroundMusic.pause();
+    backgroundMusic.currentTime = 0;
+  }
+
+  cards.forEach(card => {
+    card.addEventListener("click", flipCard);
+  });
+
+  shuffleCard();
